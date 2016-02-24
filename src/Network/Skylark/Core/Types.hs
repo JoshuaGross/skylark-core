@@ -282,12 +282,11 @@ class UnTxt a where
   untxt :: (Monad m) => Text -> m a
 
 instance UnTxt String where
-  untxt = return . Data.Text.unpack
+  untxt = return . unpack
 
 instance UnTxt UTCTime where
-  untxt s = do
-    s' <- untxt s
-    parseTimeM False defaultTimeLocale "%FT%T%z" s'
+  untxt s =
+    untxt s >>= parseTimeM False defaultTimeLocale "%FT%T%z"
 
 instance ToJSON UUID where
   toJSON = toJSON . toText
